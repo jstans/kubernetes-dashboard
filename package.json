@@ -10,7 +10,7 @@
     "server": "yarn workspace server start:dev",
     "webapp:docker": "yarn workspace webapp start:docker",
     "server:docker": "yarn workspace server start:docker",
-    "start": "SERVER_PORT=4000 REACT_APP_GRAPHQL_ENDPOINT=http://localhost:4000/graphql REACT_APP_GRAPHQL_SUBSCRIPTIONS_ENDPOINT=ws://localhost:4000/subscriptions concurrently --names server,webapp --kill-others-on-fail \"yarn server\" \"yarn webapp\"",
+    "start": "SERVER_PORT=4000 SNOWPACK_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:4000/graphql SNOWPACK_PUBLIC_GRAPHQL_SUBSCRIPTIONS_ENDPOINT=ws://localhost:4000/subscriptions concurrently --names server,webapp --kill-others-on-fail \"yarn server\" \"yarn webapp\"",
     "start:docker": "SERVER_PORT=4000 REACT_APP_GRAPHQL_ENDPOINT=http://localhost:4000/graphql REACT_APP_GRAPHQL_SUBSCRIPTIONS_ENDPOINT=ws://localhost:4000/subscriptions concurrently --names server,webapp --kill-others-on-fail \"yarn server:docker\" \"yarn webapp:docker\"",
     "start:prd": "pulumi up --cwd infrastructure/"
   },
