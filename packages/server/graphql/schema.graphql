@@ -1,0 +1,40 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Subscription {
+  deploymentAdded: Deployment
+  deploymentRemoved: Deployment
+  deploymentUpdated: Deployment
+}
+
+# Namespace
+type Namespace {
+  # Metadata name of namespace
+  name: ID!
+  # List of deployments for a namespace
+  deployments: [Deployment!]
+}
+
+# Deployment
+type Deployment {
+  # Metadata uid of deployment
+  id: ID!
+  # Metadata name of deployment
+  name: String
+  createdAt: String
+  status: String
+  namespace: Namespace
+}
+
+type Query {
+  # List available namespaces
+  namespaces: [Namespace]
+  deployments(namespace: String): [Deployment]
+}
+
+type Mutation {
+  addDeployment(id: String, name: String, createdAt: String): Deployment
+}

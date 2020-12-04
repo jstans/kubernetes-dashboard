@@ -1,0 +1,60 @@
+{
+  "name": "webapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@apollo/client": "^3.1.1",
+    "@craco/craco": "^5.6.4",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@urql/exchange-graphcache": "^3.0.2",
+    "graphql": "^15.3.0",
+    "graphql-tag": "^2.11.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1",
+    "subscriptions-transport-ws": "^0.9.17",
+    "urql": "^1.10.0"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11"
+  },
+  "scripts": {
+    "start": "craco start",
+    "start:docker": "docker run --name webapp -p 3000:3000 $(docker build -q -f Dockerfile .)",
+    "build": "craco build",
+    "build:docker": "docker build -q -f Dockerfile .",
+    "test": "craco test"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.json": "prettier --write",
+    "src/**/*.css": "prettier --write",
+    "src/**/*.{gql,graphql}": "prettier --write"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

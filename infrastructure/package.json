@@ -1,0 +1,13 @@
+{
+  "name": "infrastructure",
+  "main": "index.js",
+  "dependencies": {
+    "@pulumi/docker": "^2.2.3",
+    "@pulumi/kubernetes": "^2.0.0",
+    "@pulumi/pulumi": "^2.0.0"
+  },
+  "scripts": {
+    "start": "pulumi up --yes",
+    "start:docker": "docker run -p 3000:3000 $(docker build -q -f Dockerfile .)"
+  }
+}

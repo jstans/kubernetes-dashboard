@@ -1,0 +1,34 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node bin/www",
+    "start:dev": "nodemon bin/www",
+    "start:prd": "pm2 start bin/www",
+    "start:docker": "docker run --name server -p 3000:3000 $(docker build -q -f Dockerfile .)",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^6.0.15",
+    "@kubernetes/client-node": "^0.12.0",
+    "apollo-server-koa": "^2.16.1",
+    "debug": "^4.1.1",
+    "graphql": "^15.3.0",
+    "graphql-subscriptions": "^1.1.0",
+    "humanize-number": "^0.0.2",
+    "json-stream": "^1.0.0",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-convert": "^1.2.0",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^3.2.0",
+    "koa-onerror": "^4.1.0",
+    "koa-router": "^7.4.0",
+    "kubernetes-client": "^9.0.0",
+    "subscriptions-transport-ws": "^0.9.17"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
