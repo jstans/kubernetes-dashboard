@@ -15,10 +15,6 @@ const resolvers = {
   },
   Namespace: {
     deployments(parent, args, context, info) {
-      // console.log("parent", parent);
-      // console.log("args", args);
-      // console.log("context", context);
-      // console.log("info", info);
       return k8s.listDeployments(parent.name || "default");
     },
   },

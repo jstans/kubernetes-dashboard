@@ -71,7 +71,8 @@ const cache = cacheExchange({
 });
 
 const subscriptionClient = new SubscriptionClient(
-  import.meta.env.SNOWPACK_PUBLIC_GRAPHQL_SUBSCRIPTIONS_ENDPOINT,
+  import.meta?.env?.SNOWPACK_PUBLIC_GRAPHQL_SUBSCRIPTIONS_ENDPOINT ??
+    `ws://${window.location.host}/subscriptions`,
   {
     reconnect: true,
     // connectionParams: {
@@ -81,7 +82,9 @@ const subscriptionClient = new SubscriptionClient(
 );
 
 const client = new Client({
-  url: import.meta.env.SNOWPACK_PUBLIC_GRAPHQL_ENDPOINT,
+  url:
+    import.meta?.env?.SNOWPACK_PUBLIC_GRAPHQL_ENDPOINT ??
+    `${window.location.origin}/graphql`,
   // fetchOptions: () => {
   //   const token = getToken();
   //   return {

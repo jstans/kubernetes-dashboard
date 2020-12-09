@@ -1,7 +1,8 @@
 {
   "private": true,
-  "name": "proj",
-  "license": "UNLICENSED",
+  "name": "kubernetes-dashboard",
+  "version": "0.1.0",
+  "license": "MIT",
   "workspaces": [
     "packages/*"
   ],

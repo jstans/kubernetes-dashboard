@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery, useSubscription } from 'urql';
+import { CircularProgress } from '@chakra-ui/react';
 
 import {
   deploymentList,
@@ -22,15 +23,13 @@ const Namespace = ({ name }) => {
 
   return (
     <>
-      <h4>
-        Deployments for {name} {fetching && <sub>(Loading...)</sub>}
-      </h4>
-      <ul>
-        {error && 'Error loading deployments'}
-        {data?.deployments.map((deployment) => (
+      {fetching && <CircularProgress isIndeterminate color="green.300" />}
+      {error && 'Error loading deployments'}
+      {(data?.deployments.length &&
+        data.deployments.map((deployment) => (
           <Deployment key={deployment.id} {...deployment} />
-        ))}
-      </ul>
+        ))) ||
+        'No deployments'}
     </>
   );
 };

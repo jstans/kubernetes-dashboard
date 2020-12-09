@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery } from 'urql';
+import { Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react';
 
 import Namespace from 'Components/Namespace';
 
@@ -11,12 +12,26 @@ const Main = () => {
     pollInterval: 10000,
     requestPolicy: 'cache-and-network',
   });
+
+  if (!data || !data.namespaces) return 'No namespaces found';
+
   return (
-    data?.namespaces.map((namespace) => (
-      <Namespace key={namespace.name} {...namespace} />
-    )) ?? 'No namespaces found'
+    <Tabs>
+      <TabList>
+        {data.namespaces.map(({ name }) => (
+          <Tab>{name}</Tab>
+        ))}
+      </TabList>
+
+      <TabPanels>
+        {data.namespaces.map((namespace) => (
+          <TabPanel>
+            <Namespace key={namespace.name} {...namespace} />
+          </TabPanel>
+        ))}
+      </TabPanels>
+    </Tabs>
   );
-  //   return <Namespace name="default" />;
 };
 
 export default Main;

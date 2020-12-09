@@ -7,7 +7,6 @@ const json = require("koa-json");
 const onerror = require("koa-onerror");
 const bodyparser = require("koa-bodyparser");
 const logger = require("koa-logger");
-const humanize = require("humanize-number");
 const { ApolloServer } = require("apollo-server-koa");
 const { execute, subscribe } = require("graphql");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
@@ -68,7 +67,6 @@ apollo.applyMiddleware({ app });
 // const ee = new EventEmitter();
 
 server.once("listening", () => {
-  console.log("SETTING UP SUBSCRIPTION SERVER");
   new SubscriptionServer(
     {
       execute,

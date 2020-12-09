@@ -1,53 +1,40 @@
+const path = require("path");
 const fs = require("fs");
 const pulumi = require("@pulumi/pulumi");
 const k8s = require("@pulumi/kubernetes");
 const docker = require("@pulumi/docker");
 
-const appLabels = { app: "server" };
+const packageJson = require("../../packages/server/package.json");
+const { name, version } = packageJson;
+const appLabels = { app: name };
 
-const name = require("../../packages/server/package.json").name;
+const registry = process.env.DOCKER_REGISTRY;
 
-const imageName = name;
 const image = new docker.Image(name, {
-  // imageName: pulumi.interpolate`${name}:v1.0.0`,
-  imageName,
-  localImageName: name,
+  imageName: pulumi.interpolate`${registry}/${name}:v${version}`,
   build: {
     context: "../",
     dockerfile: "../server.Dockerfile",
   },
-  skipPush: true,
 });
 
-const kubeConfig = new k8s.core.v1.ConfigMap(appName, {
+// https://github.com/pulumi/pulumi-docker/issues/148
+const imageSHA = image.imageName.apply(
+  (imageName) => `sha256:${imageName.split("-").pop()}`
+);
+
+const existingKubeConfig =
+  process.env.KUBECONFIG || path.join(require("os").homedir(), "/.kube/config");
+
+const kubeConfig = new k8s.core.v1.ConfigMap(name, {
   metadata: { labels: appLabels },
   data: {
-    config: ```
-      apiVersion: v1
-      clusters:
-      - cluster:
-          certificate-authority: fake-ca-file
-          server: https://1.2.3.4
-        name: development
-      contexts:
-      - context:
-          cluster: development
-          namespace: frontend
-          user: developer
-        name: dev-frontend
-      current-context: dev-frontend
-      kind: Config
-      preferences: {}
-      users:
-      - name: developer
-        user:
-          client-certificate: fake-cert-file
-          client-key: fake-key-file
-    ```,
+    config: fs.readFileSync(existingKubeConfig, "utf-8"),
   },
 });
 
 const node = new k8s.apps.v1.Deployment(name, {
+  metadata: { name, labels: appLabels },
   spec: {
     selector: { matchLabels: appLabels },
     replicas: 1,
@@ -57,8 +44,7 @@ const node = new k8s.apps.v1.Deployment(name, {
         containers: [
           {
             name,
-            image,
-            // env: [{ name: "KUBECONFIG", value: "/home/node/.kube/config" }],
+            image: imageSHA,
             volumeMounts: [
               { name: "kube-config", mountPath: "/home/node/.kube" },
             ],
@@ -67,7 +53,8 @@ const node = new k8s.apps.v1.Deployment(name, {
         volumes: [
           {
             name: "kube-config",
-            secret: { secretName: `${name}-kube-config` },
+            // secret: { secretName: `${name}-kube-config` },
+            configMap: { name: kubeConfig.metadata.apply((m) => m.name) },
           },
         ],
       },
@@ -77,10 +64,9 @@ const node = new k8s.apps.v1.Deployment(name, {
 exports.name = node.metadata.name;
 
 const backend = new k8s.core.v1.Service(name, {
-  metadata: { labels: node.spec.template.metadata.labels },
+  metadata: { name, labels: node.spec.template.metadata.labels },
   spec: {
-    //type: isMinikube === "true" ? "ClusterIP" : "LoadBalancer",
-    type: "LoadBalancer",
+    type: "ClusterIP",
     ports: [{ port: 4000, targetPort: 4000, protocol: "TCP" }],
     selector: appLabels,
   },
