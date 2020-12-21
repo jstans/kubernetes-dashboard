@@ -8,7 +8,7 @@ const packageJson = require("../../packages/server/package.json");
 const { name, version } = packageJson;
 const appLabels = { app: name };
 
-const registry = process.env.DOCKER_REGISTRY;
+const registry = process.env.DOCKER_REGISTRY || "localhost:5000";
 
 const image = new docker.Image(name, {
   imageName: pulumi.interpolate`${registry}/${name}:v${version}`,
@@ -48,6 +48,23 @@ const node = new k8s.apps.v1.Deployment(name, {
             volumeMounts: [
               { name: "kube-config", mountPath: "/home/node/.kube" },
             ],
+            livenessProbe: {
+              httpGet: {
+                path: "/health/healthz",
+                port: 4000,
+              },
+              initialDelaySeconds: 3,
+              periodSeconds: 3,
+              failureThreshold: 2,
+            },
+            readinessProbe: {
+              httpGet: {
+                path: "/health/healthz",
+                port: 4000,
+              },
+              initialDelaySeconds: 10,
+              periodSeconds: 5,
+            },
           },
         ],
         volumes: [

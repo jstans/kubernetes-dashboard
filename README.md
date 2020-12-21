@@ -15,7 +15,6 @@ Technologies used: Pulumi, Kubernetes, Docker, React, GraphQL, GraphQL Subscript
 - `@snowpack/plugin-webpack` option for production builds
 - Optimise node module installation time (Yarn 2 or pnpm?)
 - Add sample for e2e tests
-- Add k8s probes
 
 # Running
 

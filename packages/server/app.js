@@ -12,9 +12,11 @@ const { execute, subscribe } = require("graphql");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 
-const pods = require("./routes/pods");
+const k8sRoutes = require("./routes/pods");
+const healthRoutes = require("./routes/health");
 const { typeDefs, resolvers } = require("./graphql");
 const k8s = require("./services/k8s");
+const health = require("./services/health");
 
 // error handler
 onerror(app);
@@ -26,10 +28,11 @@ app.use(
   })
 );
 app.use(json());
-app.use(logger());
 
 // routes
-app.use(pods.routes(), pods.allowedMethods());
+app.use(healthRoutes.routes(), healthRoutes.allowedMethods());
+app.use(logger());
+app.use(k8sRoutes.routes(), k8sRoutes.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {
@@ -41,6 +44,11 @@ app.on("error", (err, ctx) => {
  */
 
 const server = http.createServer(app.callback());
+
+/**
+ * Initialise health checks by passing server instance
+ */
+health.init(server);
 
 // const apollo = new ApolloServer({ typeDefs, resolvers, uploads: false });
 const apollo = new ApolloServer({

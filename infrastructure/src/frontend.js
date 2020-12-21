@@ -6,7 +6,7 @@ const packageJson = require("../../packages/webapp/package.json");
 const { name, version } = packageJson;
 const appLabels = { app: name };
 
-const registry = process.env.DOCKER_REGISTRY;
+const registry = process.env.DOCKER_REGISTRY || "localhost:5000";
 
 const image = new docker.Image(name, {
   imageName: pulumi.interpolate`${registry}/${name}:v${version}`,
@@ -45,6 +45,14 @@ const nginx = new k8s.apps.v1.Deployment(name, {
             // volumeMounts: [
             //   { name: "nginx-configs", mountPath: "/etc/nginx/conf.d" },
             // ],
+            readinessProbe: {
+              httpGet: {
+                path: "/healthz",
+                port: 9090,
+              },
+              initialDelaySeconds: 10,
+              periodSeconds: 5,
+            },
           },
         ],
         // volumes: [
