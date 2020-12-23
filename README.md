@@ -13,7 +13,6 @@ Technologies used: Pulumi, Kubernetes, Docker, React, GraphQL, GraphQL Subscript
 - Use ES modules on the server
 - Support a more efficient binary format (CBOR or RION?) for websocket payloads
 - `@snowpack/plugin-webpack` option for production builds
-- Optimise node module installation time (Yarn 2 or pnpm?)
 - Add sample for e2e tests
 
 # Running

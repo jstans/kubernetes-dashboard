@@ -1,13 +1,9 @@
 FROM node:14-buster-slim AS build
-COPY package.json .yarnrc.yml yarn.lock /usr/src/app/
-COPY packages/webapp /usr/src/app/packages/webapp
+COPY [".", "/usr/src/app"]
 WORKDIR /usr/src/app/packages/webapp
-RUN yarn install --focus --frozen-lockfile
-# RUN yarn set version berry && yarn plugin import workspace-tools && yarn workspaces focus
-# RUN yarn install --frozen-lockfile && \
-#     yarn run build
+RUN yarn set version berry && yarn workspaces focus
 
-FROM abdennour/nginx-distroless-unprivileged as run
+FROM abdennour/nginx-distroless-unprivileged AS run
 COPY --chown=1001:0 packages/webapp/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build --chown=1001:0 /usr/src/app/packages/webapp/build/ .
 WORKDIR /opt/app

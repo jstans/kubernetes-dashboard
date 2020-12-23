@@ -1,1 +1,15 @@
-**/node_modules
+**
+
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/versions
+!.yarnrc.yml
+!.pnp.js
+!yarn.lock
+!package.json
+
+!packages/server
+!packages/webapp
+packages/server/node_modules
+packages/webapp/node_modules
