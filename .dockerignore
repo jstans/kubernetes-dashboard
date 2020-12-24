@@ -13,3 +13,4 @@
 !packages/webapp
 packages/server/node_modules
 packages/webapp/node_modules
+packages/webapp/build
