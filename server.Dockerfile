@@ -1,7 +1,7 @@
 FROM node:14-buster-slim AS build
 WORKDIR /home/node/app
 COPY [".", "."]
-RUN echo '\nnodeLinker: node-modules' >> .yarnrc.yml && yarn set version berry && cd packages/server && yarn workspaces focus --production
+RUN yarn set version berry && cd packages/server && yarn workspaces focus --production
 
 FROM gcr.io/distroless/nodejs-debian10:14 AS run
 COPY --from=build /home/node/app/packages/server /home/node/app
